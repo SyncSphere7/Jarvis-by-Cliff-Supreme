@@ -1,0 +1,16 @@
+[
+  {
+    "service_id": "service_5886",
+    "name": "GitHub API",
+    "base_url": "https://api.github.com",
+    "credentials": {
+      "api_key": "test_key"
+    },
+    "status": "connected",
+    "endpoints": {
+      "health": "/health",
+      "status": "/status"
+    },
+    "last_connected": "2025-08-15T18:28:32.939194"
+  }
+]

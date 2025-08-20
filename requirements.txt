@@ -6,6 +6,5 @@ torch
 pyttsx3
 llama-cpp-python
 huggingface-hub
-selenium
-undetected_chromedriver
-web3
+# Removed selenium and undetected_chromedriver - can be re-added for legitimate automation
+# Removed web3 - can be re-added for legitimate blockchain interactions
