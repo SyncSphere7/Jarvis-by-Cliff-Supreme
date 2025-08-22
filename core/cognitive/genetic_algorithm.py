@@ -26,14 +26,17 @@ class GeneticAlgorithm:
         self.population = self.crossover()
         self.population = self.mutation()
 
-    def selection(self, fitness_scores):
+    def selection(self, fitness_scores, elitism=True):
         """
         Selects the fittest individuals from the population.
         """
         sorted_population = [x for _, x in sorted(zip(fitness_scores, self.population), key=lambda pair: pair[0], reverse=True)]
-        return sorted_population[:self.population_size]
+        if elitism:
+            return sorted_population[:2] + sorted_population[:self.population_size-2]
+        else:
+            return sorted_population[:self.population_size]
 
-    def crossover(self):
+    def crossover(self, crossover_type="uniform"):
         """
         Creates a new population by crossing over the fittest individuals.
         """
@@ -41,18 +44,25 @@ class GeneticAlgorithm:
         for i in range(0, self.population_size, 2):
             parent1 = self.population[i]
             parent2 = self.population[i+1]
-            crossover_point = np.random.randint(0, self.gene_length)
-            child1 = np.concatenate((parent1[:crossover_point], parent2[crossover_point:]))
-            child2 = np.concatenate((parent2[:crossover_point], parent1[crossover_point:]))
+            if crossover_type == "uniform":
+                child1 = np.array([parent1[j] if np.random.rand() < 0.5 else parent2[j] for j in range(self.gene_length)])
+                child2 = np.array([parent2[j] if np.random.rand() < 0.5 else parent1[j] for j in range(self.gene_length)])
+            else: # single point crossover
+                crossover_point = np.random.randint(0, self.gene_length)
+                child1 = np.concatenate((parent1[:crossover_point], parent2[crossover_point:]))
+                child2 = np.concatenate((parent2[:crossover_point], parent1[crossover_point:]))
             new_population.extend([child1, child2])
         return new_population
 
-    def mutation(self):
+    def mutation(self, mutation_type="gaussian"):
         """
         Mutates the population by randomly changing genes.
         """
         for i in range(self.population_size):
             if np.random.rand() < 0.1:
-                mutation_point = np.random.randint(0, self.gene_length)
-                self.population[i][mutation_point] = np.random.rand()
+                if mutation_type == "gaussian":
+                    self.population[i] += np.random.normal(0, 0.1, self.gene_length)
+                else: # random mutation
+                    mutation_point = np.random.randint(0, self.gene_length)
+                    self.population[i][mutation_point] = np.random.rand()
         return self.population

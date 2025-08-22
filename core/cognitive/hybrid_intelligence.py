@@ -19,6 +19,7 @@ from gui.ar.ar_interface import ARInterface
 from core.cognitive.goal_management import GoalManagementSystem
 from core.cognitive.expert_system import ExpertSystem
 from core.cognitive.genetic_algorithm import GeneticAlgorithm
+from core.cognitive.planner import Planner
 
 class HybridIntelligenceSystem:
     def __init__(self):
@@ -38,6 +39,21 @@ class HybridIntelligenceSystem:
         self.goal_management_system = GoalManagementSystem()
         self.expert_system = ExpertSystem()
         self.genetic_algorithm = GeneticAlgorithm(population_size=100, gene_length=100)
+        actions = [
+            {"name": "boil water", "preconditions": ["has water", "has kettle"], "effects": ["has boiling water"]},
+            {"name": "grind coffee", "preconditions": ["has coffee beans"], "effects": ["has ground coffee"]},
+            {"name": "add coffee to filter", "preconditions": ["has ground coffee", "has filter"], "effects": ["has coffee in filter"]},
+            {"name": "pour water", "preconditions": ["has boiling water", "has coffee in filter"], "effects": ["has coffee"]}
+        ]
+        self.planner = Planner(actions)
+
+    def execute(self, action):
+        """
+        Executes an action.
+        """
+        # This is a placeholder for a more advanced execution engine.
+        # A real implementation would be much more complex.
+        print(f"Executing action: {action['name']}")
 
     def load_model(self, model_path):
         """
@@ -47,21 +63,24 @@ class HybridIntelligenceSystem:
         # A real implementation would be much more complex.
         print(f"Loading model from {model_path}")
 
-    def reason(self, input_data):
+    def reason(self, goal, state):
         """
-        Reasons about the input data using a combination of symbolic and connectionist methods.
+        Reasons about the goal using a combination of symbolic and connectionist methods.
         """
         # Symbolic reasoning
-        tokens = input_data.split()
-        meanings = [self.semantic_memory.get_meaning(token) for token in tokens]
-        self.global_workspace.add_to_workspace(meanings)
+        plan = self.planner.plan(goal, state)
+        if plan:
+            for action in plan:
+                self.execute(action)
+        else:
+            print("Could not find a plan to achieve the goal.")
 
         # Connectionist reasoning (more sophisticated neural network)
         # Placeholder for a more advanced reasoning engine
-        output_vector = self.advanced_reasoning_engine(input_data)
+        # output_vector = self.advanced_reasoning_engine(goal)
         
-        # For the purpose of this demonstration, we will just return the output vector
-        return output_vector
+        # For the purpose of this demonstration, we will just return None
+        return None
 
     def advanced_reasoning_engine(self, input_data):
         """
