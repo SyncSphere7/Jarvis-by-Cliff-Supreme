@@ -21,10 +21,13 @@ from core.cognitive.expert_system import ExpertSystem
 from core.cognitive.genetic_algorithm import GeneticAlgorithm
 from core.cognitive.planner import Planner
 
+import numpy as np
+
 class HybridIntelligenceSystem:
     def __init__(self):
         self.global_workspace = GlobalWorkspace()
-        self.consciousness_metric = ConsciousnessMetric()
+        transition_matrix = np.random.rand(10, 10)
+        self.consciousness_metric = ConsciousnessMetric(transition_matrix)
         self.lifelong_learning_system = LifelongLearningSystem()
         self.episodic_memory = EpisodicMemory()
         self.semantic_memory = SemanticMemory()

@@ -46,10 +46,7 @@ class Planner:
         """
         score = 0
         for effect in action["effects"]:
-            if effect in goal:
-                score += 1
-        for precondition in action["preconditions"]:
-            if precondition in state:
+            if effect in goal and effect not in state:
                 score += 1
         return score
 

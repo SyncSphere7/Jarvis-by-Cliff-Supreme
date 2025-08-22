@@ -5,22 +5,22 @@ This module contains the typography for the new design system.
 
 class Typography:
     H1 = {
-        "font-family": "Roboto, sans-serif",
-        "font-size": "2.5rem",
+        "font-family": "Montserrat, sans-serif",
+        "font-size": "3rem",
         "font-weight": "bold",
     }
     H2 = {
-        "font-family": "Roboto, sans-serif",
-        "font-size": "2rem",
+        "font-family": "Montserrat, sans-serif",
+        "font-size": "2.5rem",
         "font-weight": "bold",
     }
     H3 = {
-        "font-family": "Roboto, sans-serif",
-        "font-size": "1.75rem",
+        "font-family": "Montserrat, sans-serif",
+        "font-size": "2rem",
         "font-weight": "bold",
     }
     BODY = {
-        "font-family": "Roboto, sans-serif",
-        "font-size": "1rem",
+        "font-family": "Lato, sans-serif",
+        "font-size": "1.1rem",
         "font-weight": "normal",
     }

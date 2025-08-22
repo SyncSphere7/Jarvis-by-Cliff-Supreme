@@ -13,4 +13,11 @@ class ConceptualBlending:
         """
         # This is a very simplified version of conceptual blending.
         # A real implementation would be much more complex.
-        return " ".join(concepts)
+        blended_concept = {}
+        for concept in concepts:
+            for key, value in concept.items():
+                if key in blended_concept:
+                    blended_concept[key].append(value)
+                else:
+                    blended_concept[key] = [value]
+        return blended_concept

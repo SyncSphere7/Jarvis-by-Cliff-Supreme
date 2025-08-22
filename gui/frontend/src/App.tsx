@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Container, Typography, Paper, Grid, Card, CardContent, Fab, Tooltip } from '@mui/material'
+import { Box, Container, Typography, Paper, Grid, Card, CardContent, Fab, Tooltip, createTheme, ThemeProvider } from '@mui/material'
 import { Dashboard, Chat, Close } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
 import Header from './components/Header'
@@ -10,6 +10,46 @@ import SupremeDashboard from './components/SupremeDashboard'
 import DebugInfo from './components/DebugInfo'
 import { connectSocket, disconnectSocket } from './store/socketSlice'
 import { RootState } from './store/store'
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#6200ea',
+    },
+    secondary: {
+      main: '#03dac6',
+    },
+    background: {
+      default: '#121212',
+      paper: '#1e1e1e',
+    },
+    text: {
+      primary: '#ffffff',
+      secondary: '#b3b3b3',
+    },
+  },
+  typography: {
+    fontFamily: 'Lato, sans-serif',
+    h1: {
+      fontFamily: 'Montserrat, sans-serif',
+      fontSize: '3rem',
+      fontWeight: 'bold',
+    },
+    h2: {
+      fontFamily: 'Montserrat, sans-serif',
+      fontSize: '2.5rem',
+      fontWeight: 'bold',
+    },
+    h3: {
+      fontFamily: 'Montserrat, sans-serif',
+      fontSize: '2rem',
+      fontWeight: 'bold',
+    },
+    body1: {
+      fontSize: '1.1rem',
+    },
+  },
+});
 
 const App: React.FC = () => {
   const dispatch = useDispatch()
@@ -27,14 +67,15 @@ const App: React.FC = () => {
   }, [dispatch])
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      {/* Header */}
-      <Header />
+    <ThemeProvider theme={theme}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', bgcolor: 'background.default' }}>
+        {/* Header */}
+        <Header />
       
       {/* Main Content */}
       {showDashboard ? (
         /* Supreme Dashboard View */
-        <Box sx={{ flex: 1, overflow: 'auto', p: 2, backgroundColor: '#f5f5f5' }}>
+        <Box sx={{ flex: 1, overflow: 'auto', p: 2, backgroundColor: '#121212' }}>
           <SupremeDashboard />
         </Box>
       ) : (
@@ -103,6 +144,7 @@ const App: React.FC = () => {
       {/* Debug Info */}
       <DebugInfo />
     </Box>
+    </ThemeProvider>
   )
 }
 

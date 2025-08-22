@@ -3,28 +3,32 @@ Semantic Memory for Jarvis 2.0
 This module allows Jarvis to understand the meaning of words and concepts.
 """
 
+import networkx as nx
+
 class SemanticMemory:
     def __init__(self):
-        self.memory = {}
+        self.graph = nx.Graph()
 
     def add_concept(self, concept, meaning):
         """
         Adds a concept to the memory.
         """
-        self.memory[concept] = meaning
+        self.graph.add_node(concept, meaning=meaning)
 
     def get_meaning(self, concept):
         """
         Returns the meaning of a concept.
         """
-        return self.memory.get(concept)
+        return self.graph.nodes[concept]["meaning"]
+
+    def add_relation(self, concept1, concept2, relation):
+        """
+        Adds a relation between two concepts.
+        """
+        self.graph.add_edge(concept1, concept2, relation=relation)
 
     def get_related_concepts(self, concept):
         """
         Returns all concepts from the memory that are related to the given concept.
         """
-        related_concepts = []
-        for key, value in self.memory.items():
-            if concept in value:
-                related_concepts.append(key)
-        return related_concepts
+        return list(self.graph.neighbors(concept))
