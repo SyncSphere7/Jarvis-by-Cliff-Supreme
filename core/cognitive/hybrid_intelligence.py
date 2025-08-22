@@ -17,6 +17,8 @@ from core.robotics.robotics_platform import RoboticsPlatform
 from gui.vr.vr_environment import VREnvironment
 from gui.ar.ar_interface import ARInterface
 from core.cognitive.goal_management import GoalManagementSystem
+from core.cognitive.expert_system import ExpertSystem
+from core.cognitive.genetic_algorithm import GeneticAlgorithm
 
 class HybridIntelligenceSystem:
     def __init__(self):
@@ -34,6 +36,8 @@ class HybridIntelligenceSystem:
         self.vr_environment = VREnvironment()
         self.ar_interface = ARInterface()
         self.goal_management_system = GoalManagementSystem()
+        self.expert_system = ExpertSystem()
+        self.genetic_algorithm = GeneticAlgorithm(population_size=100, gene_length=100)
 
     def load_model(self, model_path):
         """
@@ -65,13 +69,9 @@ class HybridIntelligenceSystem:
         """
         # This is a placeholder for a more advanced reasoning engine.
         # A real implementation would be much more complex.
-        import numpy as np
-        input_vector = np.random.rand(100)
-        weights1 = np.random.rand(100, 50)
-        weights2 = np.random.rand(50, 10)
-        hidden_layer = np.dot(input_vector, weights1)
-        output_vector = np.dot(hidden_layer, weights2)
-        return output_vector
+        facts = input_data.split()
+        inferred_facts = self.expert_system.reason(facts)
+        return inferred_facts
 
     def save_model(self, model_path):
         """
@@ -95,20 +95,10 @@ class HybridIntelligenceSystem:
         # For the purpose of this demonstration, we will just print a message to the console
         print("Learning from training data")
 
-    def advanced_learning_algorithm(self, training_data, target_output):
+    def advanced_learning_algorithm(self, fitness_function):
         """
         A more advanced learning algorithm.
         """
         # This is a placeholder for a more advanced learning algorithm.
         # A real implementation would be much more complex.
-        import numpy as np
-        input_vector = np.random.rand(100)
-        weights1 = np.random.rand(100, 50)
-        weights2 = np.random.rand(50, 10)
-        hidden_layer = np.dot(input_vector, weights1)
-        output_vector = np.dot(hidden_layer, weights2)
-        error = target_output - output_vector
-        d_weights2 = np.dot(hidden_layer.T, error)
-        d_weights1 = np.dot(input_vector.T, np.dot(error, weights2.T))
-        weights1 += d_weights1
-        weights2 += d_weights2
+        self.genetic_algorithm.evolve(fitness_function)
