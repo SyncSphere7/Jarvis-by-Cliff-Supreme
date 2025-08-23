@@ -10,6 +10,9 @@ from dataclasses import dataclass
 import threading
 import queue
 import time
+from gtts import gTTS
+import pygame
+import tempfile
 
 from core.interfaces.voice_interface import VoiceResponse
 
@@ -164,20 +167,14 @@ class VoiceResponseGenerator:
     def speak_response(self, response: VoiceResponse) -> bool:
         """Queue a response for speaking"""
         try:
-            # For now, just print the response with emotion indicator
-            emotion_emoji = {
-                'neutral': '😐',
-                'friendly': '😊',
-                'excited': '🤩',
-                'concerned': '😟',
-                'apologetic': '😔',
-                'confident': '😎',
-                'helpful': '🤝',
-                'humorous': '😄'
-            }
-            
-            emoji = emotion_emoji.get(response.emotion, '🗣️')
-            print(f"{emoji} Jarvis ({response.emotion}): {response.text}")
+            tts = gTTS(text=response.text, lang='en')
+            with tempfile.NamedTemporaryFile(delete=True) as fp:
+                tts.save(f"{fp.name}.mp3")
+                pygame.mixer.init()
+                pygame.mixer.music.load(f"{fp.name}.mp3")
+                pygame.mixer.music.play()
+                while pygame.mixer.music.get_busy():
+                    pygame.time.Clock().tick(10)
             
             # Track interaction for personality consistency
             self._track_interaction(response)

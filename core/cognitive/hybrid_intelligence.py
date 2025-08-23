@@ -20,6 +20,10 @@ from core.cognitive.goal_management import GoalManagementSystem
 from core.cognitive.expert_system import ExpertSystem
 from core.cognitive.genetic_algorithm import GeneticAlgorithm
 from core.cognitive.planner import Planner
+from core.ai.quantum_neural import QuantumNeuralNetwork
+from pgmpy.models import BayesianModel
+from pgmpy.factors.discrete import TabularCPD
+from pgmpy.inference import VariableElimination
 
 import numpy as np
 
@@ -28,20 +32,11 @@ class HybridIntelligenceSystem:
         self.global_workspace = GlobalWorkspace()
         transition_matrix = np.random.rand(10, 10)
         self.consciousness_metric = ConsciousnessMetric(transition_matrix)
-        self.lifelong_learning_system = LifelongLearningSystem()
+        self.lifelong_learning_system = LifelongLearningSystem(input_size=10, hidden_sizes=[20, 20], output_size=5)
         self.episodic_memory = EpisodicMemory()
         self.semantic_memory = SemanticMemory()
-        self.generative_models = GenerativeModels()
+        self.generative_models = GenerativeModels(vocab_size=100, hidden_size=50)
         self.conceptual_blending = ConceptualBlending()
-        self.imagination_system = ImaginationSystem()
-        self.emotion_intelligence_system = EmotionIntelligenceSystem()
-        self.social_intelligence_system = SocialIntelligenceSystem()
-        self.robotics_platform = RoboticsPlatform()
-        self.vr_environment = VREnvironment()
-        self.ar_interface = ARInterface()
-        self.goal_management_system = GoalManagementSystem()
-        self.expert_system = ExpertSystem()
-        self.genetic_algorithm = GeneticAlgorithm(population_size=100, gene_length=100)
         actions = [
             {"name": "boil water", "preconditions": ["has water", "has kettle"], "effects": ["has boiling water"]},
             {"name": "grind coffee", "preconditions": ["has coffee beans"], "effects": ["has ground coffee"]},
@@ -49,6 +44,16 @@ class HybridIntelligenceSystem:
             {"name": "pour water", "preconditions": ["has boiling water", "has coffee in filter"], "effects": ["has coffee"]}
         ]
         self.planner = Planner(actions)
+        self.imagination_system = ImaginationSystem(self.planner)
+        self.emotion_intelligence_system = EmotionIntelligenceSystem(vocab_size=100, hidden_size=50, num_classes=5)
+        self.social_intelligence_system = SocialIntelligenceSystem(vocab_size=100, hidden_size=50, num_classes=5)
+        self.robotics_platform = RoboticsPlatform()
+        self.vr_environment = VREnvironment()
+        self.ar_interface = ARInterface()
+        self.goal_management_system = GoalManagementSystem()
+        self.expert_system = ExpertSystem()
+        self.genetic_algorithm = GeneticAlgorithm(population_size=10, gene_length=10)
+        self.quantum_neural_network = QuantumNeuralNetwork()
 
     def execute(self, action):
         """
@@ -87,13 +92,24 @@ class HybridIntelligenceSystem:
 
     def advanced_reasoning_engine(self, input_data):
         """
-        A more advanced reasoning engine.
+        A more advanced reasoning engine using a Bayesian Network.
         """
-        # This is a placeholder for a more advanced reasoning engine.
-        # A real implementation would be much more complex.
-        facts = input_data.split()
-        inferred_facts = self.expert_system.reason(facts)
-        return inferred_facts
+        # This is a simplified Bayesian Network for demonstration.
+        model = BayesianModel([('A', 'C'), ('B', 'C')])
+        cpd_a = TabularCPD(variable='A', variable_card=2, values=[[0.5], [0.5]])
+        cpd_b = TabularCPD(variable='B', variable_card=2, values=[[0.5], [0.5]])
+        cpd_c = TabularCPD(variable='C', variable_card=2,
+                           values=[[0.1, 0.9, 0.2, 0.8],
+                                   [0.9, 0.1, 0.8, 0.2]],
+                           evidence=['A', 'B'],
+                           evidence_card=[2, 2])
+        model.add_cpds(cpd_a, cpd_b, cpd_c)
+        
+        inference = VariableElimination(model)
+        
+        # For demonstration, we'll just check the probability of C given A=0 and B=1
+        result = inference.query(variables=['C'], evidence={'A': 0, 'B': 1})
+        return result.values.tolist()
 
     def save_model(self, model_path):
         """
@@ -117,10 +133,15 @@ class HybridIntelligenceSystem:
         # For the purpose of this demonstration, we will just print a message to the console
         print("Learning from training data")
 
-    def advanced_learning_algorithm(self, fitness_function):
+    def advanced_learning_algorithm(self, training_data, target_output):
         """
         A more advanced learning algorithm.
         """
         # This is a placeholder for a more advanced learning algorithm.
         # A real implementation would be much more complex.
+        def fitness_function(solution):
+            # This is a dummy fitness function for demonstration.
+            # A real implementation would be much more complex.
+            return -np.sum((np.array(solution) - np.array(target_output)) ** 2)
+
         self.genetic_algorithm.evolve(fitness_function)

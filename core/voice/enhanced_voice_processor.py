@@ -12,6 +12,9 @@ import scipy.signal
 from scipy.io import wavfile
 import tempfile
 import os
+from gtts import gTTS
+import pygame
+from python_speech_features import mfcc
 
 from core.interfaces.voice_interface import VoiceProcessor, VoiceCommand, VoiceResponse
 
@@ -230,14 +233,17 @@ class EnhancedVoiceProcessor(VoiceProcessor):
             return None
     
     def speak_response(self, response: VoiceResponse) -> bool:
-        """Convert text to speech and play (placeholder implementation)"""
+        """Convert text to speech and play"""
         try:
-            # For now, just log the response
-            # In a full implementation, this would use TTS
-            logger.info(f"Speaking: {response.text}")
-            print(f"🗣️ Jarvis: {response.text}")
+            tts = gTTS(text=response.text, lang='en')
+            with tempfile.NamedTemporaryFile(delete=True) as fp:
+                tts.save(f"{fp.name}.mp3")
+                pygame.mixer.init()
+                pygame.mixer.music.load(f"{fp.name}.mp3")
+                pygame.mixer.music.play()
+                while pygame.mixer.music.get_busy():
+                    pygame.time.Clock().tick(10)
             return True
-            
         except Exception as e:
             logger.error(f"Speech synthesis error: {e}")
             return False
@@ -245,22 +251,27 @@ class EnhancedVoiceProcessor(VoiceProcessor):
     def identify_speaker(self, audio_data: np.ndarray) -> Optional[str]:
         """Identify speaker from audio data (simplified implementation)"""
         try:
-            # This is a placeholder for speaker identification
-            # In a full implementation, this would use speaker recognition models
+            mfcc_features = mfcc(audio_data, self.sample_rate)
             
-            # For now, extract basic audio features for future use
-            rms_energy = np.sqrt(np.mean(audio_data ** 2))
-            spectral_centroid = self._calculate_spectral_centroid(audio_data)
+            if not self.speaker_profiles:
+                # No speakers enrolled yet
+                return "unknown_speaker"
+                
+            # Compare with known speaker profiles
+            best_match = None
+            min_distance = float('inf')
             
-            # Store features for potential future speaker identification
-            features = {
-                'rms_energy': rms_energy,
-                'spectral_centroid': spectral_centroid,
-                'timestamp': datetime.now()
-            }
+            for speaker_id, profile in self.speaker_profiles.items():
+                distance = np.linalg.norm(mfcc_features.mean(axis=0) - profile.mean(axis=0))
+                if distance < min_distance:
+                    min_distance = distance
+                    best_match = speaker_id
             
-            # Return default speaker for now
-            return "default_user"
+            # Simple thresholding for identification
+            if min_distance < 10: # This threshold would need tuning
+                return best_match
+            else:
+                return "unknown_speaker"
             
         except Exception as e:
             logger.error(f"Speaker identification error: {e}")

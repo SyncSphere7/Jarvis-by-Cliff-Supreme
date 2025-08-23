@@ -51,6 +51,7 @@ class SupremeConfig:
     integration_hub: EngineConfig = field(default_factory=EngineConfig)
     analytics_engine: EngineConfig = field(default_factory=EngineConfig)
     communication_engine: EngineConfig = field(default_factory=EngineConfig)
+    communication_config: Dict[str, Any] = field(default_factory=dict)
     knowledge_engine: EngineConfig = field(default_factory=EngineConfig)
     proactive_engine: EngineConfig = field(default_factory=EngineConfig)
     security_fortress: EngineConfig = field(default_factory=EngineConfig)

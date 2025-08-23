@@ -3,14 +3,17 @@ TTS Engine for Jarvis 2.0
 This module contains the implementation of the TTS engine.
 """
 
+from gtts import gTTS
+import os
+
 class TTSEngine:
     def __init__(self):
-        import pyttsx3
-        self.engine = pyttsx3.init()
+        pass
 
     def say(self, text):
         """
         Speaks the given text.
         """
-        self.engine.say(text)
-        self.engine.runAndWait()
+        tts = gTTS(text=text, lang='en')
+        tts.save("speech.mp3")
+        os.system("mpg321 speech.mp3")

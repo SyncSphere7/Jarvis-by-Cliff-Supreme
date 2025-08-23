@@ -724,15 +724,21 @@ class SmartHomeController(BaseModule):
     # Protocol handlers (placeholder implementations)
     def _wifi_handler(self, command: DeviceCommand) -> bool:
         """Handle WiFi device commands"""
-        logger.info(f"WiFi command: {command.command} for device {command.device_id}")
-        return True  # Simulate success
+        logger.info(f"Executing WiFi command '{command.command}' for device {command.device_id} with parameters {command.parameters}")
+        # In a real implementation, you would use a library like `pywifi` to interact with the device.
+        # For this demo, we'll just simulate a successful command execution.
+        return True
     
     def _zigbee_handler(self, command: DeviceCommand) -> bool:
         """Handle Zigbee device commands"""
-        logger.info(f"Zigbee command: {command.command} for device {command.device_id}")
-        return True  # Simulate success
+        logger.info(f"Executing Zigbee command '{command.command}' for device {command.device_id} with parameters {command.parameters}")
+        # In a real implementation, you would use a library like `zigpy` to interact with the device.
+        # For this demo, we'll just simulate a successful command execution.
+        return True
     
     def _zwave_handler(self, command: DeviceCommand) -> bool:
         """Handle Z-Wave device commands"""
-        logger.info(f"Z-Wave command: {command.command} for device {command.device_id}")
-        return True  # Simulate success
+        logger.info(f"Executing Z-Wave command '{command.command}' for device {command.device_id} with parameters {command.parameters}")
+        # In a real implementation, you would use a library like `python-openzwave` to interact with the device.
+        # For this demo, we'll just simulate a successful command execution.
+        return True

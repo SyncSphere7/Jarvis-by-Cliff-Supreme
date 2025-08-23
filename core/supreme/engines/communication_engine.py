@@ -12,6 +12,7 @@ from enum import Enum
 from datetime import datetime, timedelta
 import os
 import re
+from googletrans import Translator
 
 from ..base_supreme_engine import BaseSupremeEngine, SupremeRequest, SupremeResponse
 
@@ -56,13 +57,7 @@ class UniversalTranslator:
     def __init__(self, config: Dict[str, Any]):
         self.config = config
         self.logger = logging.getLogger(__name__)
-        
-        # Supported languages
-        self.supported_languages = {
-            'en': 'English', 'es': 'Spanish', 'fr': 'French', 'de': 'German',
-            'it': 'Italian', 'pt': 'Portuguese', 'ru': 'Russian', 'ja': 'Japanese',
-            'ko': 'Korean', 'zh': 'Chinese', 'ar': 'Arabic', 'hi': 'Hindi'
-        }
+        self.translator = Translator()
         
         # Translation cache
         self.translation_cache: Dict[str, Dict[str, Any]] = {}
@@ -75,15 +70,14 @@ class UniversalTranslator:
             if cache_key in self.translation_cache:
                 return self.translation_cache[cache_key]
             
-            # Simulate translation (in real implementation, use actual translation service)
-            translated_text = f"[{target_language.upper()}] {text}"
+            translation = self.translator.translate(text, dest=target_language, src=source_language)
             
             result = {
                 "original_text": text,
-                "translated_text": translated_text,
-                "source_language": source_language,
-                "target_language": target_language,
-                "confidence_score": 0.85,
+                "translated_text": translation.text,
+                "source_language": translation.src,
+                "target_language": translation.dest,
+                "confidence_score": 1.0, # googletrans does not provide confidence score
                 "timestamp": datetime.now().isoformat()
             }
             
@@ -106,13 +100,12 @@ class UniversalTranslator:
     async def detect_language(self, text: str) -> Dict[str, Any]:
         """Detect the language of given text"""
         try:
-            # Simulate language detection
-            detected_lang = "en"  # Default to English
+            detection = self.translator.detect(text)
             
             return {
-                "language_code": detected_lang,
-                "language_name": self.supported_languages.get(detected_lang, "Unknown"),
-                "confidence": 0.85,
+                "language_code": detection.lang,
+                "language_name": detection.lang,
+                "confidence": detection.confidence,
                 "detected_at": datetime.now().isoformat()
             }
             
@@ -306,7 +299,7 @@ class SupremeCommunicationEngine(BaseSupremeEngine):
     """
     
     def __init__(self, engine_name: str, config):
-        super().__init__(engine_name, config)
+        super().__init__(engine_name, config.communication_engine)
         
         # Initialize communicator
         comm_config = getattr(config, 'communication_config', {})

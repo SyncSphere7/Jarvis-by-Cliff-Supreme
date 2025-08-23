@@ -5,37 +5,31 @@ This module implements the Global Workspace Theory, which suggests that consciou
 
 class GlobalWorkspace:
     def __init__(self):
-        self.workspace = []
-        self.subscribers = []
+        self.blackboard = {}
+        self.knowledge_sources = []
 
-    def subscribe(self, subscriber):
+    def add_knowledge_source(self, knowledge_source):
         """
-        Subscribes a cognitive module to the global workspace.
+        Adds a knowledge source to the global workspace.
         """
-        self.subscribers.append(subscriber)
+        self.knowledge_sources.append(knowledge_source)
 
-    def broadcast(self, item):
+    def update_blackboard(self, key, value):
         """
-        Broadcasts an item to all subscribed cognitive modules.
+        Updates the blackboard with new information.
         """
-        for subscriber in self.subscribers:
-            subscriber.receive(item)
+        self.blackboard[key] = value
+        self.trigger_knowledge_sources()
 
-    def add_to_workspace(self, item):
+    def get_blackboard_contents(self):
         """
-        Adds an item to the global workspace and broadcasts it to all subscribers.
+        Returns the contents of the blackboard.
         """
-        self.workspace.append(item)
-        self.broadcast(item)
+        return self.blackboard
 
-    def get_workspace_contents(self):
+    def trigger_knowledge_sources(self):
         """
-        Returns the contents of the global workspace.
+        Triggers all knowledge sources to see if they can contribute to the solution.
         """
-        return self.workspace
-
-    def clear_workspace(self):
-        """
-        Clears the global workspace.
-        """
-        self.workspace = []
+        for knowledge_source in self.knowledge_sources:
+            knowledge_source.contribute(self.blackboard)
