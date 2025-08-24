@@ -1,0 +1,38 @@
+# Jarvis 2.0 - Render Deployment Configuration
+# Completely FREE tier available
+
+services:
+  - type: web
+    name: jarvis-2-0
+    runtime: python3
+    buildCommand: pip install -r requirements.txt
+    startCommand: python web_app.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_APP
+        value: web_app.py
+      - key: PORT
+        value: 10000
+      - key: GOOGLE_API_KEY
+        sync: false  # Set this in Render dashboard
+      - key: DATABASE_URL
+        fromService:
+          type: postgres
+          name: jarvis-db
+          property: connection_string
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: jarvis-redis
+          property: connection_string
+
+  - type: postgres
+    name: jarvis-db
+    ipAllowList: []  # Only accessible by Render services
+
+  - type: redis
+    name: jarvis-redis
+    ipAllowList: []  # Only accessible by Render services
