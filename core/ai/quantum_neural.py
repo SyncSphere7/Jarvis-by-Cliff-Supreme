@@ -44,17 +44,32 @@ class ClassicalQuantumInterface:
         return sum(int(k, 2) * v for k, v in counts.items()) / sum(counts.values())
 
 class QuantumNeuralNetwork:
-    def __init__(self, num_qubits=2, num_parameters=4):
+    def __init__(self, num_qubits=8, num_parameters=16):
         self.num_qubits = num_qubits
         self.num_parameters = num_parameters
         self.quantum_processor = QuantumProcessor(num_qubits)
         self.hybrid_interface = ClassicalQuantumInterface()
-        
+
+        # Enhanced quantum circuit with superposition and entanglement
         self.circuit = QuantumCircuit(self.num_qubits)
+
+        # Add Hadamard gates for superposition
+        self.circuit.h(range(self.num_qubits))
+
+        # Add entanglement gates
+        for i in range(self.num_qubits - 1):
+            self.circuit.cx(i, i + 1)
+
+        # Create advanced variational circuit
         self.variational_circuit = self.quantum_processor.create_variational_circuit(num_parameters)
         self.circuit.compose(self.variational_circuit, inplace=True)
-        
-        self.parameters = np.random.rand(num_parameters)
+
+        # Initialize parameters with quantum optimization
+        self.parameters = np.random.rand(num_parameters) * 2 * np.pi
+
+        # Quantum memory for coherence
+        self.quantum_memory = []
+        self.coherence_threshold = 0.9
 
     def train(self, data, label):
         """
