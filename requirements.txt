@@ -28,3 +28,4 @@ Werkzeug>=2.3.0  # For password hashing
 redis>=4.5.0
 Flask-Limiter>=3.5.0
 gunicorn==21.2.0
+eventlet
